@@ -8,15 +8,18 @@ export class Game {
     private _animationRunning = false;
     private _score = 0;
     private _highScore = 0;
+    private _history: string[] = [];
     private _scoreNode: HTMLDivElement;
     private _highScoreNode: HTMLDivElement;
     private _gameNode: HTMLDivElement;
+    private _backButtonNode: HTMLDivElement;
     private _gameOverDialog: HTMLDialogElement;
 
     constructor() {
         this._scoreNode = document.querySelector<HTMLDivElement>('#score');
         this._highScoreNode = document.querySelector<HTMLDivElement>('#highScore');
         this._gameNode = document.querySelector<HTMLDivElement>('#newGame');
+        this._backButtonNode = document.querySelector<HTMLDivElement>('#backButton');
         this._gameOverDialog = document.querySelector<HTMLDialogElement>('#gameOver');
         const itemWrapper = document.querySelectorAll<HTMLDivElement>('.item-wrapper');
         if (itemWrapper) {
@@ -27,8 +30,9 @@ export class Game {
                 return new Item({node});
             });
 
-            const { items, score, highScore } = getData(rawItems);
+            const { items, score, highScore, history } = getData(rawItems);
 
+            this._history = history;
             this._map = items;
             this._score = score;
             this._highScore = highScore;
@@ -50,6 +54,12 @@ export class Game {
         if (this._animationRunning) {
             return;
         }
+        const currentDataForHistory = JSON.stringify({
+            score: this._score,
+            highScore: this._highScore,
+            items: this._map.map((item) => item.value)
+        });
+
         const colDirection = direction === Direction.Right ? -1 : 1;
         const rowDirection = direction === Direction.Down ? -1 : 1;
         const colStart = direction === Direction.Right ? 3 : 0;
@@ -109,7 +119,8 @@ export class Game {
                 });
                 randomAdd(this._map);
                 this._updateScore();
-                saveDataDebounce({items: this._map, score: this._score, highScore: this._highScore });
+                this._history = [currentDataForHistory];
+                this._saveData(true);
                 if (checkEndOfGame(this._map)) {
                     this._gameOver();
                 }
@@ -133,9 +144,35 @@ export class Game {
             item.setValue(0);
         });
         this._updateScore();
-        saveData({ items: this._map, score: this._score, highScore: this._highScore });
+        this._history = [];
+        this._saveData();
         this._init();
         this._gameOverDialog.close();
+    }
+
+    private _saveData(withDebounce = false): void {
+        const data = { items: this._map, score: this._score, highScore: this._highScore, history: this._history };
+        if (withDebounce) {
+            saveDataDebounce(data);
+        } else {
+            saveData(data);
+        }
+    }
+
+    private _historyBack(): void {
+        const dataStr = this._history.pop();
+        if (dataStr) {
+            const data = JSON.parse(dataStr);
+            this._score = data.score || 0;
+            this._highScore = data.highScore || 0;
+            const rawItems = data.items || [];
+
+            rawItems.forEach((value: number, index: number) => {
+                this._map[index].setValue(value);
+            });
+            this._updateScore();
+            this._saveData();
+        }
     }
 
     private _keyDownHandler = (event: KeyboardEvent): void => {
@@ -158,6 +195,7 @@ export class Game {
     private _subscribe(): void {
         document.addEventListener('keydown', this._keyDownHandler);
         this._gameNode.addEventListener('click', () => this._newGame());
+        this._backButtonNode.addEventListener('click', () => this._historyBack());
 
         const swap = new Swipe('main');
 

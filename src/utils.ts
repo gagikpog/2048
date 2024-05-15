@@ -5,6 +5,7 @@ interface IData<TItem = Item> {
     items: TItem[];
     score: number;
     highScore: number;
+    history: string[];
 }
 
 export enum Direction {
@@ -70,8 +71,8 @@ const debounce = <F extends (...args: any[]) => any>(func: F, waitFor: number) =
     return debounced as (...args: Parameters<F>) => ReturnType<F>;
 };
 
-export function saveData({items, score, highScore}: IData) {
-    localStorage.setItem(GAME_SATE_PARAM, JSON.stringify({score, highScore, items: items.map((item) => item.value)}));
+export function saveData({ items, score, highScore, history }: IData) {
+    localStorage.setItem(GAME_SATE_PARAM, JSON.stringify({ score, highScore, items: items.map((item) => item.value), history }));
 }
 
 export const saveDataDebounce = debounce(saveData, 500);
@@ -85,15 +86,15 @@ export function getData(items: Item[]): IData {
         const score = data.score || 0;
         const highScore = data.highScore || 0;
         const rawItems = data.items || [];
+        const history = data.history || [];
 
         rawItems.forEach((value: number, index: number) => {
             items[index].setValue(value);
         });
 
-        return { score, items, highScore };
+        return { score, items, highScore, history };
 
     } catch (error) {
-        return { score: 0, items, highScore: 0 };
+        return { score: 0, items, highScore: 0, history: [] };
     }
-
 }

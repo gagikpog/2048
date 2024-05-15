@@ -141,6 +141,18 @@ main {
     }
 }
 
+footer {
+    width: calc(var(--item-size) * 4);
+    margin-inline: auto;
+    padding: 6px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.back-button {
+    cursor: pointer;
+}
+
 dialog {
     position: absolute;
     inset: 50%;

@@ -1,12 +1,14 @@
 const path = require('path');
-const fs = require('fs');
+
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const CopywebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     context: __dirname,
-    entry: {},
+    entry: {
+        app: './src/app.ts'
+    },
     output: {
         filename: '[name].js',
         path: path.resolve(__dirname, 'dist'),
@@ -36,10 +38,9 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            filename: 'index.html',
             template: 'src/index.html',
-            inject: true,
-            inline: fs.readFileSync('dist/app.js', 'utf8'),
+            inject: 'head',
+            scriptLoading: 'blocking'
         }),
         new CopywebpackPlugin({
             patterns: [
