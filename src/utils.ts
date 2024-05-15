@@ -40,7 +40,7 @@ export function randomAdd(items: Item[]): void {
 
 export function checkEndOfGame(items: Item[]): boolean {
     // test empty element
-    return items.every((item) => item.value !== 0) ||
+    return items.every((item) => item.value !== 0) &&
         // test neighbors with some value
         items.every((item, index) => !checkSomeNeighbor(item.value, items, index));
 }
@@ -70,9 +70,11 @@ const debounce = <F extends (...args: any[]) => any>(func: F, waitFor: number) =
     return debounced as (...args: Parameters<F>) => ReturnType<F>;
 };
 
-export const saveData = debounce(({items, score, highScore}: IData) => {
+export function saveData({items, score, highScore}: IData) {
     localStorage.setItem(GAME_SATE_PARAM, JSON.stringify({score, highScore, items: items.map((item) => item.value)}));
-}, 500);
+}
+
+export const saveDataDebounce = debounce(saveData, 500);
 
 export function getData(items: Item[]): IData {
 
@@ -81,7 +83,7 @@ export function getData(items: Item[]): IData {
         const data = JSON.parse(dataStr) as IData<number>;
 
         const score = data.score || 0;
-        const highScore = data.score || 0;
+        const highScore = data.highScore || 0;
         const rawItems = data.items || [];
 
         rawItems.forEach((value: number, index: number) => {

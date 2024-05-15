@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>2048 game</title>
     <link rel="manifest" href="/manifest.webmanifest" />
+    <script><%= htmlWebpackPlugin.options.inline %></script>
 </head>
 
 <body>
@@ -19,10 +20,6 @@
         </div>
 
         <div class="header-center">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="#fff" id="newGame">
-                <title>new game</title>
-                <path d="M15.65 4.35A8 8 0 1 0 17.4 13h-2.22a6 6 0 1 1-1-7.22L11 9h7V2z"/>
-            </svg>
         </div>
 
         <div class="header-right">
@@ -57,5 +54,16 @@
             <div class="item-wrapper"></div>
         </div>
     </main>
+    <dialog id="gameOver">
+        <div>
+            Game Over
+        </div>
+        <div class="new-game-button">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="#fff" id="newGame">
+                <title>new game</title>
+                <path d="M15.65 4.35A8 8 0 1 0 17.4 13h-2.22a6 6 0 1 1-1-7.22L11 9h7V2z"/>
+            </svg>
+        </div>
+    </dialog>
 </body>
 </html>

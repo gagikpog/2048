@@ -56,7 +56,7 @@ export class Item {
             { position: 'absolute', left: '0', top: '0', zIndex: 100 },
             { position: 'absolute', left: `calc(${leftOffset} * var(--item-size))`, top: `calc(${topOffset} * var(--item-size))`, zIndex: 100}
         ],  {
-            duration: 150,
+            duration: 100,
             iterations: 1,
         });
 

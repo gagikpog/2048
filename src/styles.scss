@@ -140,3 +140,23 @@ main {
         background-color: #000000;
     }
 }
+
+dialog {
+    position: absolute;
+    inset: 50%;
+    transform: translate(-50%, -50%);
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #016e6e83;
+    color: #fff;
+    white-space: nowrap;
+    text-transform: uppercase;
+}
+
+.new-game-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 8px;
+}

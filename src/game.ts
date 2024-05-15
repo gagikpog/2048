@@ -1,6 +1,6 @@
 import { Item } from './item';
 import { Swipe } from './swipe';
-import { Direction, checkEndOfGame, getData, randomAdd, saveData } from './utils';
+import { Direction, checkEndOfGame, getData, randomAdd, saveData, saveDataDebounce } from './utils';
 
 export class Game {
 
@@ -10,10 +10,14 @@ export class Game {
     private _highScore = 0;
     private _scoreNode: HTMLDivElement;
     private _highScoreNode: HTMLDivElement;
+    private _gameNode: HTMLDivElement;
+    private _gameOverDialog: HTMLDialogElement;
 
     constructor() {
         this._scoreNode = document.querySelector<HTMLDivElement>('#score');
         this._highScoreNode = document.querySelector<HTMLDivElement>('#highScore');
+        this._gameNode = document.querySelector<HTMLDivElement>('#newGame');
+        this._gameOverDialog = document.querySelector<HTMLDialogElement>('#gameOver');
         const itemWrapper = document.querySelectorAll<HTMLDivElement>('.item-wrapper');
         if (itemWrapper) {
             const rawItems = Array.from(itemWrapper).map((item) => {
@@ -23,22 +27,23 @@ export class Game {
                 return new Item({node});
             });
 
-            const {items, score} = getData(rawItems);
+            const { items, score, highScore } = getData(rawItems);
 
             this._map = items;
             this._score = score;
+            this._highScore = highScore;
             this._updateScore();
-            if (!score) {
-                this._init();
-            }
+            this._init();
         }
 
         this._subscribe();
     }
 
     private _init(): void {
-        randomAdd(this._map);
-        randomAdd(this._map);
+        if (this._map.every((items) => items.value === 0)) {
+            randomAdd(this._map);
+            randomAdd(this._map);
+        }
     }
 
     private _move(direction: Direction): void {
@@ -104,7 +109,7 @@ export class Game {
                 });
                 randomAdd(this._map);
                 this._updateScore();
-                saveData({items: this._map, score: this._score, highScore: this._highScore });
+                saveDataDebounce({items: this._map, score: this._score, highScore: this._highScore });
                 if (checkEndOfGame(this._map)) {
                     this._gameOver();
                 }
@@ -119,7 +124,18 @@ export class Game {
     }
 
     private _gameOver(): void {
+        this._gameOverDialog.showModal();
+    }
 
+    private _newGame(): void {
+        this._score = 0;
+        this._map.forEach((item: Item) => {
+            item.setValue(0);
+        });
+        this._updateScore();
+        saveData({ items: this._map, score: this._score, highScore: this._highScore });
+        this._init();
+        this._gameOverDialog.close();
     }
 
     private _keyDownHandler = (event: KeyboardEvent): void => {
@@ -141,6 +157,7 @@ export class Game {
 
     private _subscribe(): void {
         document.addEventListener('keydown', this._keyDownHandler);
+        this._gameNode.addEventListener('click', () => this._newGame());
 
         const swap = new Swipe('main');
 
