@@ -1,0 +1,142 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+html, body, main {
+    height: 100%;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+    --item-size: min(calc(100vw / 4 - 8px), calc(100vh / 4 - 66px));
+    background-color: #34a117;
+    color: #fff;
+    font-weight: bold;
+}
+
+header {
+    width: calc(var(--item-size) * 4);
+    height: 50px;
+    margin-inline: auto;
+    background-color: #a9a931;
+    border-radius: 0 0 4px 4px;
+    display: flex;
+    align-items: center;
+    padding: 6px;
+}
+
+.logo {
+    &-item {
+        padding: 4px;
+        border-radius: 4px;
+    }
+}
+
+.header-center {
+    margin-inline: auto;
+    cursor: pointer;
+}
+
+.header-right {
+    padding: 4px;
+    text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.score {
+    font-size: 20px;
+}
+
+.high-score {
+    font-size: 13px;
+}
+
+main {
+    display: flex;
+}
+
+.game {
+    padding: 8px;
+    display: grid;
+    grid-template-columns: repeat(4, var((--item-size)));
+    grid-template-rows: repeat(4, var((--item-size)));
+    gap: 4px;
+    margin: auto;
+    user-select: none;
+}
+
+.item-wrapper {
+    background-color: #00ffff2e;
+    border-radius: 4px;
+    position: relative;
+
+}
+
+.item {
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(0.25 * var(--item-size));
+    text-shadow: 1px 1px #ccc;
+
+    &-2 {
+        background-color: #b3bdc7;
+    }
+    &-4 {
+        background-color: #8cc398;
+    }
+    &-8 {
+        background-color: #69a576;
+    }
+    &-16 {
+        background-color: #c8d13a;
+    }
+    &-32 {
+        background-color: #fd6fff;
+    }
+    &-64 {
+        background-color: #6a6d70;
+    }
+    &-128 {
+        background-color: #307733;
+    }
+    &-256 {
+        background-color: #0c3861;
+    }
+    &-512 {
+        background-color: #3b4652;
+    }
+    &-1024 {
+        background-color: #294157;
+    }
+    &-2048 {
+        background-color: #3c443e;
+    }
+    &-4096 {
+        background-color: #490f3f;
+    }
+    &-8192 {
+        background-color: #293846;
+    }
+    &-16384 {
+        background-color: #442020;
+    }
+    &-32768 {
+        background-color: #3d3326;
+    }
+    &-65536 {
+        background-color: #442f2f;
+    }
+    &-131072 {
+        background-color: #000000;
+    }
+}
