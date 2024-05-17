@@ -172,3 +172,10 @@ dialog {
     justify-content: center;
     margin-top: 8px;
 }
+
+.count-empty {
+    .back-button-count-text,
+    .back-button-count-button {
+        display: none;
+    }
+}

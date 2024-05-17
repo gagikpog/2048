@@ -2,6 +2,8 @@ import { Item } from './item';
 import { Swipe } from './swipe';
 import { Direction, checkEndOfGame, getData, randomAdd, saveData, saveDataDebounce } from './utils';
 
+const HISTORY_MAX_LENGTH = 1;
+
 export class Game {
 
     private _map: Item[];
@@ -13,6 +15,7 @@ export class Game {
     private _highScoreNode: HTMLDivElement;
     private _gameNode: HTMLDivElement;
     private _backButtonNode: HTMLDivElement;
+    private _backButtonCountNode: HTMLDivElement;
     private _gameOverDialog: HTMLDialogElement;
 
     constructor() {
@@ -20,6 +23,7 @@ export class Game {
         this._highScoreNode = document.querySelector<HTMLDivElement>('#highScore');
         this._gameNode = document.querySelector<HTMLDivElement>('#newGame');
         this._backButtonNode = document.querySelector<HTMLDivElement>('#backButton');
+        this._backButtonCountNode = document.querySelector<HTMLDivElement>('#backCount');
         this._gameOverDialog = document.querySelector<HTMLDialogElement>('#gameOver');
         const itemWrapper = document.querySelectorAll<HTMLDivElement>('.item-wrapper');
         if (itemWrapper) {
@@ -37,6 +41,7 @@ export class Game {
             this._score = score;
             this._highScore = highScore;
             this._updateScore();
+            this._updateHistory();
             this._init();
         }
 
@@ -119,8 +124,12 @@ export class Game {
                 });
                 randomAdd(this._map);
                 this._updateScore();
-                this._history = [currentDataForHistory];
+
+                this._history.splice(0, this._history.length + 1 - HISTORY_MAX_LENGTH);
+
+                this._history.push(currentDataForHistory);
                 this._saveData(true);
+                this._updateHistory();
                 if (checkEndOfGame(this._map)) {
                     this._gameOver();
                 }
@@ -145,6 +154,7 @@ export class Game {
         });
         this._updateScore();
         this._history = [];
+        this._updateHistory();
         this._saveData();
         this._init();
         this._gameOverDialog.close();
@@ -171,7 +181,16 @@ export class Game {
                 this._map[index].setValue(value);
             });
             this._updateScore();
+            this._updateHistory();
             this._saveData();
+        }
+    }
+
+    private _updateHistory(): void {
+        this._backButtonCountNode.textContent = `${this._history.length}`;
+        this._backButtonNode.classList.remove('count-empty');
+        if (this._history.length === 0) {
+            this._backButtonNode.classList.add('count-empty');
         }
     }
 
