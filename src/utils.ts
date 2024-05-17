@@ -20,7 +20,7 @@ function getValue(): number {
 }
 
 function random(min: number, max: number): number {
-    return min === max ? max : Math.floor(Math.random() * max * 10) % max + min;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 export function randomAdd(items: Item[]): void {
