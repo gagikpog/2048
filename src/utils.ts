@@ -31,7 +31,22 @@ export function randomAdd(items: Item[]): void {
         return acc;
     }, []);
 
-    if (emptyIndexes.length) {
+    if (emptyIndexes.length === 1) {
+        const index = emptyIndexes[0];
+        const item = items[index];
+        const left = items[index % 4 === 0 ? -1 : index - 1];
+        const right = items[index % 4 === 3 ? -1 : index + 1];
+        const top = items[index > 3 ? index - 4 : -1];
+        const bottom = items[index < 12 ? index + 4 : -1];
+
+        const [value = 2] = [left, right, top, bottom]
+            .filter(Boolean)
+            .map((item) => item.value === 2 || item.value === 4 ? item.value : 0)
+            .filter(Boolean);
+
+        item.setValue(value);
+
+    } else if (emptyIndexes.length) {
         const index = emptyIndexes[random(0, emptyIndexes.length - 1)];
 
         const item = items[index];
